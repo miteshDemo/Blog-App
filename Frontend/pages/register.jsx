@@ -19,7 +19,8 @@ import {
   Email,
   Lock,
   HowToReg,
-  ArrowForward
+  ArrowForward,
+  ArrowBack
 } from "@mui/icons-material";
 
 const Register = () => {
@@ -83,6 +84,26 @@ const Register = () => {
               margin: "auto"
             }}
           >
+            {/* 🔙 Back Button */}
+            <Button
+              startIcon={<ArrowBack />}
+              onClick={() => navigate("/")}
+              sx={{
+                mb: 1,
+                color: theme.palette.primary.main,
+                textTransform: "none",
+                fontWeight: "bold",
+                fontSize: "0.85rem",
+                "&:hover": {
+                  background: alpha(theme.palette.primary.main, 0.1),
+                  transform: "translateX(-3px)",
+                },
+                transition: "all 0.2s ease",
+              }}
+            >
+              Back to Home
+            </Button>
+
             <Box
               sx={{
                 display: "flex",
@@ -159,9 +180,7 @@ const Register = () => {
                       <InputAdornment position="start">
                         <Person 
                           fontSize="small"
-                          sx={{ 
-                            color: theme.palette.primary.main,
-                          }} 
+                          sx={{ color: theme.palette.primary.main }} 
                         />
                       </InputAdornment>
                     )
@@ -172,17 +191,13 @@ const Register = () => {
                       borderRadius: 2,
                       transition: 'all 0.3s ease',
                       fontSize: '0.9rem',
-                      '&:hover fieldset': {
-                        borderColor: theme.palette.primary.main,
-                      },
+                      '&:hover fieldset': { borderColor: theme.palette.primary.main },
                       '&.Mui-focused fieldset': {
                         borderWidth: 2,
                         borderColor: theme.palette.primary.main,
                       }
                     },
-                    '& .MuiInputLabel-root': {
-                      fontSize: '0.9rem'
-                    }
+                    '& .MuiInputLabel-root': { fontSize: '0.9rem' }
                   }}
                 />
                 
@@ -202,9 +217,7 @@ const Register = () => {
                       <InputAdornment position="start">
                         <Email 
                           fontSize="small"
-                          sx={{ 
-                            color: theme.palette.primary.main,
-                          }} 
+                          sx={{ color: theme.palette.primary.main }} 
                         />
                       </InputAdornment>
                     )
@@ -215,17 +228,13 @@ const Register = () => {
                       borderRadius: 2,
                       transition: 'all 0.3s ease',
                       fontSize: '0.9rem',
-                      '&:hover fieldset': {
-                        borderColor: theme.palette.primary.main,
-                      },
+                      '&:hover fieldset': { borderColor: theme.palette.primary.main },
                       '&.Mui-focused fieldset': {
                         borderWidth: 2,
                         borderColor: theme.palette.primary.main,
                       }
                     },
-                    '& .MuiInputLabel-root': {
-                      fontSize: '0.9rem'
-                    }
+                    '& .MuiInputLabel-root': { fontSize: '0.9rem' }
                   }}
                 />
                 
@@ -246,9 +255,7 @@ const Register = () => {
                       <InputAdornment position="start">
                         <Lock 
                           fontSize="small"
-                          sx={{ 
-                            color: theme.palette.primary.main,
-                          }} 
+                          sx={{ color: theme.palette.primary.main }} 
                         />
                       </InputAdornment>
                     )
@@ -259,17 +266,13 @@ const Register = () => {
                       borderRadius: 2,
                       transition: 'all 0.3s ease',
                       fontSize: '0.9rem',
-                      '&:hover fieldset': {
-                        borderColor: theme.palette.primary.main,
-                      },
+                      '&:hover fieldset': { borderColor: theme.palette.primary.main },
                       '&.Mui-focused fieldset': {
                         borderWidth: 2,
                         borderColor: theme.palette.primary.main,
                       }
                     },
-                    '& .MuiInputLabel-root': {
-                      fontSize: '0.9rem'
-                    }
+                    '& .MuiInputLabel-root': { fontSize: '0.9rem' }
                   }}
                 />
 
@@ -293,9 +296,7 @@ const Register = () => {
                       boxShadow: "0 6px 20px rgba(25, 118, 210, 0.4)",
                       background: "linear-gradient(135deg, #1565c0, #1976d2)",
                     },
-                    "&:active": {
-                      transform: "translateY(0)",
-                    },
+                    "&:active": { transform: "translateY(0)" },
                     "&:disabled": {
                       background: theme.palette.action.disabled,
                       transform: "none"
