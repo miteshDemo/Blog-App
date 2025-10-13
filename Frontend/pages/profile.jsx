@@ -35,14 +35,13 @@ const Profile = () => {
       .catch(() => navigate("/login"));
   }, [navigate]);
 
-  // ✅ Auto-close popup after 3 seconds
   useEffect(() => {
     if (!openCard) return;
     const timer = setTimeout(() => {
       setOpenCard(false);
-    }, 3000); // 3000ms = 3 seconds
+    }, 3000);
 
-    return () => clearTimeout(timer); // cleanup
+    return () => clearTimeout(timer);
   }, [openCard]);
 
   const handleLogout = () => {
@@ -61,10 +60,7 @@ const Profile = () => {
 
           {user && (
             <IconButton onClick={() => setOpenCard(!openCard)}>
-              <Avatar
-                sx={{ bgcolor: "#fff", color: "#1976d2" }}
-                alt={user.name}
-              >
+              <Avatar sx={{ bgcolor: "#fff", color: "#1976d2" }} alt={user.name}>
                 {user.name?.charAt(0).toUpperCase()}
               </Avatar>
             </IconButton>
@@ -125,13 +121,10 @@ const Profile = () => {
                 {user.name?.charAt(0).toUpperCase()}
               </Avatar>
               <Typography variant="h6">{user.name}</Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mb: 3 }}
-              >
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
                 {user.email}
               </Typography>
+
               <Button
                 variant="contained"
                 color="primary"
@@ -139,6 +132,17 @@ const Profile = () => {
                 onClick={handleLogout}
               >
                 Logout
+              </Button>
+
+              {/* ✅ Back to Home Button */}
+              <Button
+                variant="outlined"
+                color="secondary"
+                fullWidth
+                sx={{ mt: 2 }}
+                onClick={() => navigate("/")}
+              >
+                Back to Home
               </Button>
             </Card>
           </>

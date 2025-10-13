@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
-  Box,
+  AppBar,
+  Toolbar,
   Typography,
-  Paper,
   Button,
+  Box,
+  Paper,
   Grid,
   Avatar,
   Card,
@@ -24,6 +26,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import PeopleIcon from "@mui/icons-material/People";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -38,6 +41,10 @@ const AdminDashboard = () => {
   const handleLogout = () => {
     localStorage.clear();
     navigate("/login");
+  };
+
+  const handleBack = () => {
+    navigate("/");
   };
 
   // ✅ Fetch total users count
@@ -88,88 +95,118 @@ const AdminDashboard = () => {
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
-        p: 4,
-      }}
-    >
-      <Paper
-        elevation={6}
+    <Box sx={{ minHeight: "100vh", background: "#f4f6fb" }}>
+      {/* ✅ AppBar Section */}
+      <AppBar
+        position="static"
         sx={{
-          p: 3,
-          borderRadius: 4,
-          backgroundColor: "white",
-          textAlign: "center",
+          background: "linear-gradient(90deg, #3f51b5, #5c6bc0)",
+          boxShadow: 3,
         }}
       >
-        <Avatar
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Button
+            color="inherit"
+            startIcon={<ArrowBackIcon />}
+            onClick={handleBack}
+          >
+            Back to Home
+          </Button>
+          <Typography variant="h6" sx={{ fontWeight: "bold", letterSpacing: 1 }}>
+            Admin Dashboard
+          </Typography>
+          <Button
+            color="inherit"
+            startIcon={<LogoutIcon />}
+            onClick={handleLogout}
+            sx={{
+              backgroundColor: "rgba(255,255,255,0.1)",
+              "&:hover": { backgroundColor: "rgba(255,255,255,0.25)" },
+              borderRadius: 2,
+              px: 2,
+            }}
+          >
+            Logout
+          </Button>
+        </Toolbar>
+      </AppBar>
+
+      {/* ✅ Dashboard Body */}
+      <Box sx={{ p: 4 }}>
+        <Paper
+          elevation={6}
           sx={{
-            bgcolor: "#5563DE",
-            width: 80,
-            height: 80,
+            p: 4,
+            borderRadius: 4,
+            backgroundColor: "white",
+            textAlign: "center",
+            maxWidth: 800,
             mx: "auto",
-            mb: 2,
-            fontSize: 32,
           }}
         >
-          {name?.[0]?.toUpperCase() || "A"}
-        </Avatar>
+          <Avatar
+            sx={{
+              bgcolor: "#3f51b5",
+              width: 80,
+              height: 80,
+              mx: "auto",
+              mb: 2,
+              fontSize: 32,
+              boxShadow: 3,
+            }}
+          >
+            {name?.[0]?.toUpperCase() || "A"}
+          </Avatar>
 
-        <Typography variant="h4" fontWeight="bold" color="#5563DE">
-          Welcome, Admin {name || ""}
-        </Typography>
-        <Typography variant="body1" color="textSecondary" mb={3}>
-          Manage users from this dashboard
-        </Typography>
+          <Typography variant="h4" fontWeight="bold" color="#3f51b5">
+            Welcome, Admin {name || ""}
+          </Typography>
+          <Typography variant="body1" color="text.secondary" mb={3}>
+            Manage users from this dashboard
+          </Typography>
 
-        <Grid container spacing={3} justifyContent="center">
-          <Grid item xs={12} sm={6} md={4}>
-            <Card
-              elevation={3}
-              onClick={fetchUsers}
-              sx={{
-                p: 2,
-                borderRadius: 3,
-                textAlign: "center",
-                transition: "0.3s",
-                cursor: "pointer",
-                "&:hover": { transform: "translateY(-5px)" },
-              }}
-            >
-              <CardContent>
-                <Box sx={{ color: "#5563DE", fontSize: 40 }}>
-                  <PeopleIcon />
-                </Box>
-                <Typography variant="h6" mt={1}>
-                  Total Users
-                </Typography>
-                <Typography variant="h5" fontWeight="bold" color="#5563DE">
-                  {totalUsers}
-                </Typography>
-              </CardContent>
-            </Card>
+          <Grid container spacing={3} justifyContent="center">
+            <Grid item xs={12} sm={6} md={4}>
+              <Card
+                elevation={4}
+                onClick={fetchUsers}
+                sx={{
+                  p: 2,
+                  borderRadius: 3,
+                  textAlign: "center",
+                  transition: "all 0.3s ease",
+                  cursor: "pointer",
+                  "&:hover": {
+                    transform: "translateY(-6px)",
+                    boxShadow: "0 8px 20px rgba(63,81,181,0.2)",
+                  },
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ color: "#3f51b5", fontSize: 50 }}>
+                    <PeopleIcon fontSize="inherit" />
+                  </Box>
+                  <Typography variant="h6" mt={1}>
+                    Total Users
+                  </Typography>
+                  <Typography variant="h4" fontWeight="bold" color="#3f51b5">
+                    {totalUsers}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
           </Grid>
-        </Grid>
-
-        <Button
-          variant="contained"
-          color="error"
-          startIcon={<LogoutIcon />}
-          onClick={handleLogout}
-          sx={{ mt: 4, borderRadius: 2 }}
-        >
-          Logout
-        </Button>
-      </Paper>
+        </Paper>
+      </Box>
 
       {/* ✅ Users Table Modal */}
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="md">
-        <DialogTitle>All Registered Users</DialogTitle>
+        <DialogTitle sx={{ fontWeight: "bold", color: "#3f51b5" }}>
+          All Registered Users
+        </DialogTitle>
         <DialogContent>
           <Table>
-            <TableHead>
+            <TableHead sx={{ backgroundColor: "#e8eaf6" }}>
               <TableRow>
                 <TableCell><b>Name</b></TableCell>
                 <TableCell><b>Email</b></TableCell>
@@ -179,7 +216,7 @@ const AdminDashboard = () => {
             </TableHead>
             <TableBody>
               {users.map((u) => (
-                <TableRow key={u._id}>
+                <TableRow key={u._id} hover>
                   <TableCell>{u.name}</TableCell>
                   <TableCell>{u.email}</TableCell>
                   <TableCell>{u.role}</TableCell>
@@ -187,7 +224,10 @@ const AdminDashboard = () => {
                     <IconButton onClick={() => setEditUser(u)} color="primary">
                       <EditIcon />
                     </IconButton>
-                    <IconButton onClick={() => handleDeleteUser(u._id)} color="error">
+                    <IconButton
+                      onClick={() => handleDeleteUser(u._id)}
+                      color="error"
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
@@ -203,8 +243,12 @@ const AdminDashboard = () => {
 
       {/* ✅ Edit User Dialog */}
       <Dialog open={!!editUser} onClose={() => setEditUser(null)}>
-        <DialogTitle>Edit User</DialogTitle>
-        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+        <DialogTitle sx={{ fontWeight: "bold", color: "#3f51b5" }}>
+          Edit User
+        </DialogTitle>
+        <DialogContent
+          sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
+        >
           <TextField
             label="Name"
             value={editUser?.name || ""}

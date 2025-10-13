@@ -15,6 +15,9 @@ import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const navigate = useNavigate();
+  
+  // Check if user is logged in (token in localStorage)
+  const isLoggedIn = !!localStorage.getItem("token");
 
   const blogs = [
     { id: 1, title: "Getting Started with React", desc: "Learn the basics of React and component structure." },
@@ -30,9 +33,19 @@ const Home = () => {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             MyBlogApp
           </Typography>
-          <Button color="inherit" onClick={() => navigate("/register")}>Register</Button>
-          <Button color="inherit" onClick={() => navigate("/login")}>Login</Button>
-          <Button color="inherit" onClick={() => navigate("/profile")}>Profile</Button>
+
+          {/* Show buttons only if user is NOT logged in */}
+          {!isLoggedIn && (
+            <>
+              <Button color="inherit" onClick={() => navigate("/register")}>Register</Button>
+              <Button color="inherit" onClick={() => navigate("/login")}>Login</Button>
+            </>
+          )}
+
+          {/* Profile button is visible only if logged in */}
+          {isLoggedIn && (
+            <Button color="inherit" onClick={() => navigate("/profile")}>Profile</Button>
+          )}
         </Toolbar>
       </AppBar>
 
