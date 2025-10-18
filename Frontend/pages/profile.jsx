@@ -20,6 +20,7 @@ const Profile = () => {
   const [openCard, setOpenCard] = useState(false);
   const navigate = useNavigate();
 
+  // ✅ Fetch logged-in user profile
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -29,18 +30,20 @@ const Profile = () => {
 
     axios
       .get("http://localhost:5000/api/auth/profile", {
-        headers: { Authorization: token },
+        headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setUser(res.data))
-      .catch(() => navigate("/login"));
+      .catch((err) => {
+        console.error("Profile fetch error:", err.response?.data || err.message);
+        localStorage.removeItem("token");
+        navigate("/login");
+      });
   }, [navigate]);
 
+  // ✅ Auto close popup after 3s
   useEffect(() => {
     if (!openCard) return;
-    const timer = setTimeout(() => {
-      setOpenCard(false);
-    }, 3000);
-
+    const timer = setTimeout(() => setOpenCard(false), 3000);
     return () => clearTimeout(timer);
   }, [openCard]);
 
@@ -57,7 +60,6 @@ const Profile = () => {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             MyBlogApp
           </Typography>
-
           {user && (
             <IconButton onClick={() => setOpenCard(!openCard)}>
               <Avatar sx={{ bgcolor: "#fff", color: "#1976d2" }} alt={user.name}>
@@ -68,7 +70,7 @@ const Profile = () => {
         </Toolbar>
       </AppBar>
 
-      {/* Profile Content */}
+      {/* Profile Section */}
       <Box
         sx={{
           display: "flex",
@@ -82,7 +84,6 @@ const Profile = () => {
           <CircularProgress sx={{ mt: 10 }} />
         ) : (
           <>
-            {/* Stylish Welcome */}
             <Typography
               variant="h4"
               sx={{
@@ -97,7 +98,6 @@ const Profile = () => {
               Welcome back, {user.name.split(" ")[0]}! 🌟
             </Typography>
 
-            {/* Main Profile Card */}
             <Card
               sx={{
                 p: 3,
@@ -108,23 +108,20 @@ const Profile = () => {
                 bgcolor: "#fff",
               }}
             >
-              <Avatar
-                sx={{
-                  bgcolor: "#1976d2",
-                  width: 80,
-                  height: 80,
-                  fontSize: 32,
-                  mx: "auto",
-                  mb: 2,
-                }}
-              >
-                {user.name?.charAt(0).toUpperCase()}
-              </Avatar>
-              <Typography variant="h6">{user.name}</Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                {user.email}
-              </Typography>
+              {/* ✅ Removed avatar and user details from this card */}
 
+              {/* My Blogs */}
+              <Button
+                variant="contained"
+                color="info"
+                fullWidth
+                sx={{ mb: 2 }}
+                onClick={() => navigate("/my-blogs")}
+              >
+                📚 My Blogs
+              </Button>
+
+              {/* Logout */}
               <Button
                 variant="contained"
                 color="primary"
@@ -134,7 +131,7 @@ const Profile = () => {
                 Logout
               </Button>
 
-              {/* ✅ Back to Home Button */}
+              {/* Back to Home */}
               <Button
                 variant="outlined"
                 color="secondary"
@@ -149,7 +146,7 @@ const Profile = () => {
         )}
       </Box>
 
-      {/* Avatar Popup Card */}
+      {/* Avatar Popup (with user's details) */}
       {openCard && user && (
         <Fade in={openCard}>
           <Card
@@ -166,16 +163,12 @@ const Profile = () => {
             }}
           >
             <CardContent sx={{ textAlign: "center" }}>
-              <Avatar
-                sx={{
-                  bgcolor: "#1976d2",
-                  mx: "auto",
-                  mb: 1,
-                }}
-              >
+              <Avatar sx={{ bgcolor: "#1976d2", mx: "auto", mb: 1 }}>
                 {user.name?.charAt(0).toUpperCase()}
               </Avatar>
-              <Typography variant="subtitle1">{user.name}</Typography>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                {user.name}
+              </Typography>
               <Typography variant="body2" color="text.secondary">
                 {user.email}
               </Typography>

@@ -5,6 +5,10 @@ import Profile from "../Frontend/pages/profile";
 import Home from "../Frontend/pages/Home";
 import ProtectedRoute from "../Frontend/protected/protectedRoute";
 import AdminDashboard from "../Frontend/pages/AdminDashboard";
+import CreateBlog from "../Frontend/pages/CreateBlog";
+import MyBlogs from "../Frontend/pages/MyBlogs";
+
+
 
 function App() {
   return (
@@ -21,6 +25,22 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-blog"
+          element={
+            <ProtectedRoute>
+              <CreateBlog />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-blogs"
+          element={
+            <ProtectedRoute>
+              <MyBlogs />
             </ProtectedRoute>
           }
         />
