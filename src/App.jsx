@@ -7,6 +7,7 @@ import ProtectedRoute from "../Frontend/protected/protectedRoute";
 import AdminDashboard from "../Frontend/pages/AdminDashboard";
 import CreateBlog from "../Frontend/pages/CreateBlog";
 import MyBlogs from "../Frontend/pages/MyBlogs";
+import EditBlogs from "../Frontend/pages/EditBlogs"
 
 
 
@@ -41,6 +42,14 @@ function App() {
           element={
             <ProtectedRoute>
               <MyBlogs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-blog/:id"
+          element={
+            <ProtectedRoute>
+              <EditBlogs />
             </ProtectedRoute>
           }
         />

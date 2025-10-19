@@ -8,8 +8,8 @@ import { fileURLToPath } from "url";
 
 // Routes
 import authRoutes from "./routes/authRoutes.js";
-import blogRoutes from "./routes/blogRoutes.js"; // optional
-import adminRoutes from "./routes/adminRoutes.js"; // optional
+import blogRoutes from "./routes/blogRoutes.js"; 
+import adminRoutes from "./routes/adminRoutes.js"; 
 
 dotenv.config();
 const app = express();
@@ -35,5 +35,5 @@ mongoose
   .catch((err) => console.log("❌ MongoDB Error:", err));
 
 // Start Server
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

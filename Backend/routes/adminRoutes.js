@@ -1,31 +1,56 @@
-// routes/adminRoutes.js
 import express from "express";
 import User from "../models/User.js";
+import Blog from "../models/Blog.js";
 
 const router = express.Router();
 
-// ✅ Get all users
+/**
+ * ✅ Get all users with total posts count
+ */
 router.get("/users", async (req, res) => {
   try {
     const users = await User.find().select("-password");
-    res.json(users);
+
+    // Loop through all users and count blogs per user
+    const usersWithPosts = await Promise.all(
+      users.map(async (user) => {
+        // check both user and userId (depending on your schema)
+        const postCount = await Blog.countDocuments({
+          $or: [{ user: user._id }, { userId: user._id }],
+        });
+
+        return {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          totalPosts: postCount,
+        };
+      })
+    );
+
+    res.json(usersWithPosts);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching users", error });
+    console.error("❌ Error fetching users with total posts:", error);
+    res.status(500).json({ message: "Error fetching users with total posts", error });
   }
 });
 
-// ✅ Get user count
+/**
+ * ✅ User count
+ */
 router.get("/users/count", async (req, res) => {
   try {
     const count = await User.countDocuments();
     res.json({ totalUsers: count });
   } catch (error) {
-    console.error("Error fetching user count:", error);
     res.status(500).json({ message: "Error fetching user count", error });
   }
 });
 
-// ✅ Edit user
+/**
+ * ✅ Update user
+ */
 router.put("/users/:id", async (req, res) => {
   try {
     const { name, email, role } = req.body;
@@ -40,11 +65,19 @@ router.put("/users/:id", async (req, res) => {
   }
 });
 
-// ✅ Delete user
+/**
+ * ✅ Delete user (and their blogs)
+ */
 router.delete("/users/:id", async (req, res) => {
   try {
-    await User.findByIdAndDelete(req.params.id);
-    res.json({ message: "User deleted successfully" });
+    const userId = req.params.id;
+
+    await Blog.deleteMany({
+      $or: [{ user: userId }, { userId: userId }],
+    });
+
+    await User.findByIdAndDelete(userId);
+    res.json({ message: "User and their blogs deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting user", error });
   }

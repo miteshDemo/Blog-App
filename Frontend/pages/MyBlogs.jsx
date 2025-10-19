@@ -14,6 +14,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // ✅ Icon for profile
 
 const MyBlogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -73,7 +74,14 @@ const MyBlogs = () => {
         📚 My Blogs
       </Typography>
 
-      <Box textAlign="center" mb={3}>
+      {/* ✅ Button Section */}
+      <Box
+        display="flex"
+        justifyContent="center"
+        flexWrap="wrap"
+        gap={2}
+        mb={3}
+      >
         <Button
           variant="contained"
           color="success"
@@ -81,8 +89,19 @@ const MyBlogs = () => {
         >
           ✍️ Create New Blog
         </Button>
+
+        {/* ✅ New "Go to Profile" Button */}
+        <Button
+          variant="outlined"
+          color="primary"
+          startIcon={<AccountCircleIcon />}
+          onClick={() => navigate("/profile")}
+        >
+          Go to Profile
+        </Button>
       </Box>
 
+      {/* ✅ Blog Display Section */}
       {loading ? (
         <Box display="flex" justifyContent="center">
           <CircularProgress />
@@ -93,7 +112,14 @@ const MyBlogs = () => {
         <Grid container spacing={2}>
           {blogs.map((blog) => (
             <Grid item xs={12} sm={6} md={4} key={blog._id}>
-              <Card sx={{ p: 2, height: "100%", display: "flex", flexDirection: "column" }}>
+              <Card
+                sx={{
+                  p: 2,
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
                 {blog.image && (
                   <img
                     src={`http://localhost:5000/uploads/${blog.image}`}
@@ -118,14 +144,19 @@ const MyBlogs = () => {
                   </Typography>
                 </CardContent>
 
-                <CardActions sx={{ mt: 1, justifyContent: "space-between", p: 0 }}>
+                <CardActions
+                  sx={{ mt: 1, justifyContent: "space-between", p: 0 }}
+                >
                   <IconButton
                     color="primary"
                     onClick={() => navigate(`/edit-blog/${blog._id}`)}
                   >
                     <EditIcon />
                   </IconButton>
-                  <IconButton color="error" onClick={() => handleDelete(blog._id)}>
+                  <IconButton
+                    color="error"
+                    onClick={() => handleDelete(blog._id)}
+                  >
                     <DeleteIcon />
                   </IconButton>
                 </CardActions>

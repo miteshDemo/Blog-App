@@ -60,7 +60,7 @@ const AdminDashboard = () => {
     fetchCount();
   }, []);
 
-  // ✅ Fetch all users
+  // ✅ Fetch all users (with totalPosts)
   const fetchUsers = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/admin/users");
@@ -96,7 +96,7 @@ const AdminDashboard = () => {
 
   return (
     <Box sx={{ minHeight: "100vh", background: "#f4f6fb" }}>
-      {/* ✅ AppBar Section */}
+      {/* ✅ AppBar */}
       <AppBar
         position="static"
         sx={{
@@ -105,11 +105,7 @@ const AdminDashboard = () => {
         }}
       >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Button
-            color="inherit"
-            startIcon={<ArrowBackIcon />}
-            onClick={handleBack}
-          >
+          <Button color="inherit" startIcon={<ArrowBackIcon />} onClick={handleBack}>
             Back to Home
           </Button>
           <Typography variant="h6" sx={{ fontWeight: "bold", letterSpacing: 1 }}>
@@ -162,7 +158,7 @@ const AdminDashboard = () => {
             Welcome, Admin {name || ""}
           </Typography>
           <Typography variant="body1" color="text.secondary" mb={3}>
-            Manage users from this dashboard
+            Manage users and view their total posts
           </Typography>
 
           <Grid container spacing={3} justifyContent="center">
@@ -211,6 +207,7 @@ const AdminDashboard = () => {
                 <TableCell><b>Name</b></TableCell>
                 <TableCell><b>Email</b></TableCell>
                 <TableCell><b>Role</b></TableCell>
+                <TableCell><b>Total Posts</b></TableCell>
                 <TableCell><b>Actions</b></TableCell>
               </TableRow>
             </TableHead>
@@ -220,14 +217,12 @@ const AdminDashboard = () => {
                   <TableCell>{u.name}</TableCell>
                   <TableCell>{u.email}</TableCell>
                   <TableCell>{u.role}</TableCell>
+                  <TableCell>{u.totalPosts ?? 0 }</TableCell>
                   <TableCell>
                     <IconButton onClick={() => setEditUser(u)} color="primary">
                       <EditIcon />
                     </IconButton>
-                    <IconButton
-                      onClick={() => handleDeleteUser(u._id)}
-                      color="error"
-                    >
+                    <IconButton onClick={() => handleDeleteUser(u._id)} color="error">
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
@@ -246,9 +241,7 @@ const AdminDashboard = () => {
         <DialogTitle sx={{ fontWeight: "bold", color: "#3f51b5" }}>
           Edit User
         </DialogTitle>
-        <DialogContent
-          sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
-        >
+        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
           <TextField
             label="Name"
             value={editUser?.name || ""}

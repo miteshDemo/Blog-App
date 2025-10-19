@@ -14,7 +14,16 @@ const authMiddleware = async (req, res, next) => {
     }
 
     const token = authHeader.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      if (err.name === "TokenExpiredError") {
+        return res.status(401).json({ msg: "Token expired" });
+      }
+      return res.status(401).json({ msg: "Token is not valid" });
+    }
 
     const user = await User.findById(decoded.id).select("-password");
     if (!user) return res.status(404).json({ msg: "User not found" });
@@ -23,7 +32,7 @@ const authMiddleware = async (req, res, next) => {
     next();
   } catch (err) {
     console.error("Auth Error:", err.message);
-    res.status(401).json({ msg: "Token is not valid" });
+    res.status(500).json({ msg: "Server error in authentication" });
   }
 };
 
