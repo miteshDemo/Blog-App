@@ -1,3 +1,4 @@
+// src/pages/MyBlogs.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -14,13 +15,13 @@ import {
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // ✅ Icon for profile
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const MyBlogs = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
   const token = localStorage.getItem("token");
 
   // ✅ Fetch logged-in user's blogs
@@ -33,7 +34,7 @@ const MyBlogs = () => {
       });
       setBlogs(res.data);
     } catch (err) {
-      console.error(err);
+      console.error("Fetch error:", err);
       navigate("/login");
     } finally {
       setLoading(false);
@@ -51,7 +52,7 @@ const MyBlogs = () => {
       await axios.delete(`http://localhost:5000/api/blogs/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      fetchBlogs();
+      fetchBlogs(); // refresh after delete
     } catch (err) {
       console.error(err);
       alert("Failed to delete blog");
@@ -74,23 +75,11 @@ const MyBlogs = () => {
         📚 My Blogs
       </Typography>
 
-      {/* ✅ Button Section */}
-      <Box
-        display="flex"
-        justifyContent="center"
-        flexWrap="wrap"
-        gap={2}
-        mb={3}
-      >
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => navigate("/create-blog")}
-        >
+      {/* ✅ Top Buttons */}
+      <Box display="flex" justifyContent="center" flexWrap="wrap" gap={2} mb={3}>
+        <Button variant="contained" color="success" onClick={() => navigate("/create-blog")}>
           ✍️ Create New Blog
         </Button>
-
-        {/* ✅ New "Go to Profile" Button */}
         <Button
           variant="outlined"
           color="primary"
@@ -144,19 +133,14 @@ const MyBlogs = () => {
                   </Typography>
                 </CardContent>
 
-                <CardActions
-                  sx={{ mt: 1, justifyContent: "space-between", p: 0 }}
-                >
-                  <IconButton
-                    color="primary"
-                    onClick={() => navigate(`/edit-blog/${blog._id}`)}
-                  >
+                <CardActions sx={{ mt: 1, justifyContent: "space-between", p: 0 }}>
+                  <IconButton color="info" onClick={() => navigate(`/view-blog/${blog._id}`)}>
+                    <VisibilityIcon />
+                  </IconButton>
+                  <IconButton color="primary" onClick={() => navigate(`/edit-blog/${blog._id}`)}>
                     <EditIcon />
                   </IconButton>
-                  <IconButton
-                    color="error"
-                    onClick={() => handleDelete(blog._id)}
-                  >
+                  <IconButton color="error" onClick={() => handleDelete(blog._id)}>
                     <DeleteIcon />
                   </IconButton>
                 </CardActions>

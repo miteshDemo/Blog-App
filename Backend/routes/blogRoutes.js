@@ -6,15 +6,16 @@ import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Multer config
+// 📁 Multer configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "uploads/"),
   filename: (req, file, cb) =>
     cb(null, Date.now() + path.extname(file.originalname)),
 });
+
 const upload = multer({ storage });
 
-// ✅ CREATE BLOG - FIXED: Use 'user' instead of 'userId'
+// ✅ CREATE BLOG
 router.post("/", authMiddleware, upload.single("image"), async (req, res) => {
   try {
     const { title, content } = req.body;
@@ -28,65 +29,69 @@ router.post("/", authMiddleware, upload.single("image"), async (req, res) => {
       content,
       image,
       author: req.user.name,
-      user: req.user._id, // ✅ FIXED: Changed from userId to user
+      user: req.user._id,
     });
 
     await blog.save();
     res.status(201).json(blog);
   } catch (error) {
-    console.error(error);
+    console.error("❌ Create Blog Error:", error);
     res.status(500).json({ msg: "Server error" });
   }
 });
 
-// ✅ GET ALL BLOGS OF LOGGED-IN USER - FIXED: Use 'user' instead of 'userId'
+// ✅ GET ALL BLOGS OF LOGGED-IN USER
 router.get("/my-blogs", authMiddleware, async (req, res) => {
   try {
-    const blogs = await Blog.find({ user: req.user._id }).sort({ // ✅ FIXED: Changed from userId to user
-      createdAt: -1,
-    });
+    const blogs = await Blog.find({ user: req.user._id }).sort({ createdAt: -1 });
     res.json(blogs);
   } catch (error) {
-    console.error(error);
+    console.error("❌ Fetch Blogs Error:", error);
     res.status(500).json({ msg: "Server error" });
   }
 });
 
-// ✅ UPDATE BLOG - FIXED: Use 'user' instead of 'userId'
+// ✅ UPDATE BLOG
 router.put("/:id", authMiddleware, upload.single("image"), async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
     if (!blog) return res.status(404).json({ msg: "Blog not found" });
 
-    if (blog.user.toString() !== req.user._id.toString()) // ✅ FIXED: Changed from userId to user
+    // 🛡️ Authorization check
+    if (blog.user.toString() !== req.user._id.toString())
       return res.status(403).json({ msg: "Not authorized" });
 
     const { title, content } = req.body;
+
+    // 📝 Update fields only if provided
     if (title) blog.title = title;
     if (content) blog.content = content;
     if (req.file) blog.image = req.file.filename;
 
-    await blog.save();
-    res.json(blog);
+    const updatedBlog = await blog.save();
+    res.json({
+      msg: "Blog updated successfully",
+      blog: updatedBlog,
+    });
   } catch (error) {
-    console.error(error);
+    console.error("❌ Update Blog Error:", error);
     res.status(500).json({ msg: "Server error" });
   }
 });
 
-// ✅ DELETE BLOG - FIXED: Use 'user' instead of 'userId'
+// ✅ DELETE BLOG
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
     if (!blog) return res.status(404).json({ msg: "Blog not found" });
 
-    if (blog.user.toString() !== req.user._id.toString()) // ✅ FIXED: Changed from userId to user
+    if (blog.user.toString() !== req.user._id.toString())
       return res.status(403).json({ msg: "Not authorized" });
 
     await blog.deleteOne();
     res.json({ msg: "Blog deleted successfully" });
   } catch (error) {
-    console.error(error);
+    console.error("❌ Delete Blog Error:", error);
     res.status(500).json({ msg: "Server error" });
   }
 });

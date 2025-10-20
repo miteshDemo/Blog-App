@@ -8,6 +8,7 @@ import AdminDashboard from "../Frontend/pages/AdminDashboard";
 import CreateBlog from "../Frontend/pages/CreateBlog";
 import MyBlogs from "../Frontend/pages/MyBlogs";
 import EditBlogs from "../Frontend/pages/EditBlogs"
+import ViewBlogs from "../Frontend/pages/ViewBlogs"
 
 
 
@@ -50,6 +51,14 @@ function App() {
           element={
             <ProtectedRoute>
               <EditBlogs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/view-blogs/:id"
+          element={
+            <ProtectedRoute>
+              <ViewBlogs/>
             </ProtectedRoute>
           }
         />
