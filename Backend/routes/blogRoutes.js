@@ -51,28 +51,34 @@ router.get("/my-blogs", authMiddleware, async (req, res) => {
   }
 });
 
+// ✅ GET SINGLE BLOG BY ID
+router.get("/:id", async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id);
+    if (!blog) return res.status(404).json({ msg: "Blog not found" });
+    res.json(blog);
+  } catch (error) {
+    console.error("❌ Fetch Single Blog Error:", error);
+    res.status(500).json({ msg: "Server error" });
+  }
+});
+
 // ✅ UPDATE BLOG
 router.put("/:id", authMiddleware, upload.single("image"), async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
     if (!blog) return res.status(404).json({ msg: "Blog not found" });
 
-    // 🛡️ Authorization check
     if (blog.user.toString() !== req.user._id.toString())
       return res.status(403).json({ msg: "Not authorized" });
 
     const { title, content } = req.body;
-
-    // 📝 Update fields only if provided
     if (title) blog.title = title;
     if (content) blog.content = content;
     if (req.file) blog.image = req.file.filename;
 
     const updatedBlog = await blog.save();
-    res.json({
-      msg: "Blog updated successfully",
-      blog: updatedBlog,
-    });
+    res.json({ msg: "Blog updated successfully", blog: updatedBlog });
   } catch (error) {
     console.error("❌ Update Blog Error:", error);
     res.status(500).json({ msg: "Server error" });

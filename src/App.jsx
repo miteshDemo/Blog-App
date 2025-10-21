@@ -7,10 +7,8 @@ import ProtectedRoute from "../Frontend/protected/protectedRoute";
 import AdminDashboard from "../Frontend/pages/AdminDashboard";
 import CreateBlog from "../Frontend/pages/CreateBlog";
 import MyBlogs from "../Frontend/pages/MyBlogs";
-import EditBlogs from "../Frontend/pages/EditBlogs"
-import ViewBlogs from "../Frontend/pages/ViewBlogs"
-
-
+import EditBlogs from "../Frontend/pages/EditBlogs";
+import ViewBlog from "../Frontend/pages/ViewBlogs"; 
 
 function App() {
   return (
@@ -21,7 +19,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
 
-        {/* 🔒 Protected User Route */}
+        {/* 🔒 Protected User Routes */}
         <Route
           path="/profile"
           element={
@@ -30,6 +28,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/create-blog"
           element={
@@ -38,6 +37,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/my-blogs"
           element={
@@ -46,6 +46,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/edit-blog/:id"
           element={
@@ -54,16 +55,18 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* ✅ Fixed Route (was /view-blogs/:id) */}
         <Route
-          path="/view-blogs/:id"
+          path="/view-blog/:id"
           element={
             <ProtectedRoute>
-              <ViewBlogs/>
+              <ViewBlog />
             </ProtectedRoute>
           }
         />
 
-        {/* 🛠 Admin Protected Route (optional) */}
+        {/* 🛠 Admin Protected Route */}
         <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </BrowserRouter>
