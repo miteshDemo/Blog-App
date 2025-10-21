@@ -9,6 +9,7 @@ import CreateBlog from "../Frontend/pages/CreateBlog";
 import MyBlogs from "../Frontend/pages/MyBlogs";
 import EditBlogs from "../Frontend/pages/EditBlogs";
 import ViewBlog from "../Frontend/pages/ViewBlogs"; 
+import AdminPosts from "../Frontend/pages/adminPosts";
 
 function App() {
   return (
@@ -68,6 +69,7 @@ function App() {
 
         {/* 🛠 Admin Protected Route */}
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin-posts" element={<AdminPosts />} />
       </Routes>
     </BrowserRouter>
   );

@@ -8,9 +8,10 @@ import {
   CardMedia,
   CircularProgress,
   Button,
+  Alert,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import axios from "../api/axiosConfig"; // your axios instance with token
+import axios from "../api/axiosConfig";
 
 const ViewBlog = () => {
   const { id } = useParams();
@@ -19,12 +20,15 @@ const ViewBlog = () => {
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     const fetchBlog = async () => {
       try {
         const res = await axios.get(`/blogs/${id}`);
-        setBlog(res.data); // store fetched blog
+        console.log("Blog data:", res.data); // Debug log
+        console.log("Image path:", res.data.image); // Debug log
+        setBlog(res.data);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching blog:", err);
@@ -34,6 +38,42 @@ const ViewBlog = () => {
     };
     fetchBlog();
   }, [id]);
+
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) {
+      console.log("No image path provided");
+      return null;
+    }
+    
+    console.log("Original image path:", imagePath); // Debug log
+    
+    // Handle different image path formats
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      console.log("Full URL detected:", imagePath);
+      return imagePath;
+    }
+    
+    // Handle local file paths
+    let cleanPath = imagePath;
+    if (imagePath.startsWith('/')) {
+      cleanPath = imagePath.substring(1);
+    }
+    
+    // Check if it already includes 'uploads'
+    if (!cleanPath.includes('uploads/')) {
+      cleanPath = `uploads/${cleanPath}`;
+    }
+    
+    const finalUrl = `http://localhost:5000/${cleanPath}`;
+    console.log("Final image URL:", finalUrl); 
+    return finalUrl;
+  };
+
+  const handleImageError = (e) => {
+    console.error("Image failed to load:", e.target.src);
+    setImageError(true);
+    e.target.style.display = 'none';
+  };
 
   if (loading) {
     return (
@@ -75,6 +115,8 @@ const ViewBlog = () => {
     );
   }
 
+  const imageUrl = getImageUrl(blog.image);
+
   return (
     <Box display="flex" justifyContent="center" alignItems="center" p={2} minHeight="90vh">
       <Card sx={{ maxWidth: 700, width: "100%", p: 2, borderRadius: 3, boxShadow: 4 }}>
@@ -86,14 +128,43 @@ const ViewBlog = () => {
           Back
         </Button>
 
-        {blog.image && (
+        {/* Debug info - remove in production */}
+        {process.env.NODE_ENV === 'development' && (
+          <Alert severity="info" sx={{ mb: 2 }}>
+            Image URL: {imageUrl || 'No image'}
+          </Alert>
+        )}
+
+        {imageUrl && !imageError ? (
           <CardMedia
             component="img"
             height="350"
-            image={`http://localhost:5000/${blog.image}`}
+            image={imageUrl}
             alt={blog.title}
-            sx={{ borderRadius: 2, objectFit: "cover", mb: 2 }}
+            sx={{ 
+              borderRadius: 2, 
+              objectFit: "cover", 
+              mb: 2,
+              width: '100%'
+            }}
+            onError={handleImageError}
           />
+        ) : (
+          <Box 
+            sx={{ 
+              height: 200, 
+              bgcolor: 'grey.100', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              borderRadius: 2,
+              mb: 2
+            }}
+          >
+            <Typography color="text.secondary">
+              No image available
+            </Typography>
+          </Box>
         )}
 
         <CardContent>
@@ -101,7 +172,7 @@ const ViewBlog = () => {
             {blog.title}
           </Typography>
           <Typography variant="subtitle2" sx={{ mb: 2, color: "text.secondary" }}>
-            ✍️ By {blog.user?.name || "Unknown Author"} •{" "}
+            ✍️ By {blog.user?.name || blog.author || "Unknown Author"} •{" "}
             {new Date(blog.createdAt).toLocaleDateString()}
           </Typography>
           <Typography variant="body1" sx={{ whiteSpace: "pre-wrap", lineHeight: 1.8 }}>
